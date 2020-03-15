@@ -1,0 +1,189 @@
+
+<style>
+    #loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    }
+    @-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#tblSummary {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+#tblSummary td, #tblSummary th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tblSummary tr:nth-child(even){background-color: #f2f2f2;}
+
+#tblSummary tr:hover {background-color: #ddd;}
+
+#tblSummary th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #5f5f5f;
+  color: white;
+}
+</style>
+<div id="loader"></div>
+<p><small id="SearchTime"></small></p>
+<div id="plot">                  
+</div>
+<hr />
+<h3>Summary</h3>
+<table id="tblSummary" style="display: none;">
+    <thead>
+        <tr>
+            <th>Cluster</th>
+            <th>Total</th>
+            <th>Max.</th>
+            <th>Min.</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="trIRI">
+        </tr>
+        <tr id="trLabels">
+        </tr>
+    </tbody>
+</table>
+ <script src="Scripts/jquery-3.4.1.min.js"></script>
+ <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script>
+        function getData()
+        {
+            var dataIRI = [];
+            var dataLabel = [];
+            var maxIRI = '', minIRI = '';
+            var maxLabel = '', minLabel = '';
+
+
+            function findBy(arr, key, comparatorFn) {
+                return arr.reduce(function(prev, curr, index, arr) { 
+                return comparatorFn.call(arr, parseInt(prev[key]), parseInt(curr[key])) ? prev : curr; 
+            });
+            }
+
+            function minComp(prev, curr) {
+                return prev < curr;
+            }
+
+            function maxComp(prev, curr) {
+                return prev > curr;
+            }
+
+            var start = performance.now();
+            //Get All IRIs
+            let p_iri = new Promise((resolve, reject) => {
+                $.ajax({
+                    url: 'Code/getJSONTopicInfoByIRI.php',
+                    data: {},
+                    method: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        dataIRI = response.map(x => parseInt(x["GroupCount"]));
+                        minIRI = findBy(response, 'GroupCount', minComp).IRI + ' : '
+                               + findBy(response, 'GroupCount', minComp).GroupCount;
+                        maxIRI = findBy(response, 'GroupCount', maxComp).IRI + ' : '
+                               + findBy(response, 'GroupCount', maxComp).GroupCount;
+
+                        resolve("success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) { 
+                        reject(jqXHR);
+                     }
+                })
+            });
+            let p_label = new Promise((resolve, reject) => {
+                $.ajax({
+                    url: 'Code/getJSONTopicLabel.php',
+                    data: {},
+                    method: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        dataLabel = response.map(x => parseInt(x["GroupCount"]));
+                        minLabel = findBy(response, 'GroupCount', minComp).Label + ' : '
+                               + findBy(response, 'GroupCount', minComp).GroupCount;
+                        maxLabel = findBy(response, 'GroupCount', maxComp).Label + ' : '
+                               + findBy(response, 'GroupCount', maxComp).GroupCount;
+                        resolve("success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) { 
+                        reject(jqXHR);
+                     }
+                })
+            });
+
+            // and…
+            Promise.all([p_iri, p_label]).then(function() {
+                
+                var trace1 = {
+                    y: dataIRI,
+                    type: 'box',
+                    name: 'Topic IRI (Total: ' + dataIRI.length.toLocaleString() + ')'
+                  };
+                  
+                  var trace2 = {
+                    y: dataLabel,
+                    type: 'box',
+                    name: 'rdfsLabel (Total: ' + dataLabel.length.toLocaleString() + ')'
+                  };
+                  
+                  var layout = {
+                    title: 'Cluster Distribution',
+                    //showlegend: false
+                    }
+
+                  var data = [trace1, trace2];
+                  Plotly.newPlot('plot', data, layout);
+                  //////////////////////////////////////////
+                  // Display Summary
+                  let trIRI = `<td>IRI</td>
+                               <td>${dataIRI.length.toLocaleString()}</td>
+                               <td>${maxIRI}</td>
+                               <td>${minIRI}</td>`;
+                  document.getElementById('trIRI').innerHTML = trIRI;
+                  let trLabel = `<td>rdfsLabel</td>
+                               <td>${dataLabel.length.toLocaleString()}</td>
+                               <td>${maxLabel}</td>
+                               <td>${minLabel}</td>`;
+                  document.getElementById('trLabels').innerHTML = trLabel;
+
+                  document.getElementById("loader").style.display = "none";
+                  document.getElementById("tblSummary").style.display = "block";
+                  var end = performance.now();
+                  let time = millisToMinutesAndSeconds(end - start);
+                  $('#SearchTime').html(`Request time  (${time} seconds)`);
+            }, function() {
+                console.log("issue");
+            });
+        }
+        function millisToMinutesAndSeconds(millis) {
+                var minutes = Math.floor(millis / 60000);
+                var seconds = ((millis % 60000) / 1000).toFixed(0);
+                return minutes + " minutes, " + (seconds < 10 ? '0' : '') + seconds;
+            }
+        getData();
+      </script> 
