@@ -60,6 +60,10 @@
             <th>Total</th>
             <th>Max.</th>
             <th>Min.</th>
+            <th># of 1s</th>
+             <th># of 2s</th>
+            <th># of more 2s</th>
+            <th># of NULLs</th>
         </tr>
     </thead>
     <tbody>
@@ -76,9 +80,10 @@
         {
             var dataIRI = [];
             var dataLabel = [];
+            var dataLabelNulls = [];
             var maxIRI = '', minIRI = '';
             var maxLabel = '', minLabel = '';
-
+            
 
             function findBy(arr, key, comparatorFn) {
                 return arr.reduce(function(prev, curr, index, arr) { 
@@ -99,7 +104,7 @@
             let p_iri = new Promise((resolve, reject) => {
                 $.ajax({
                     url: 'Code/getJSONTopicInfoByIRI.php',
-                    data: {},
+                    data: {opt:'all'},
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -119,7 +124,7 @@
             let p_label = new Promise((resolve, reject) => {
                 $.ajax({
                     url: 'Code/getJSONTopicLabel.php',
-                    data: {},
+                    data: {opt:'all'},
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -128,6 +133,23 @@
                                + findBy(response, 'GroupCount', minComp).GroupCount;
                         maxLabel = findBy(response, 'GroupCount', maxComp).Label + ' : '
                                + findBy(response, 'GroupCount', maxComp).GroupCount;
+                        
+                        
+                        resolve("success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) { 
+                        reject(jqXHR);
+                     }
+                })
+            });
+            let p_label_null = new Promise((resolve, reject) => {
+                $.ajax({
+                    url: 'Code/getJSONTopicLabel.php',
+                    data: {opt:'nulls'},
+                    method: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        dataLabelNulls = response.map(x => parseInt(x["GroupCount"]));
                         resolve("success");
                     },
                     error: function (jqXHR, textStatus, errorThrown) { 
@@ -137,7 +159,7 @@
             });
 
             // and…
-            Promise.all([p_iri, p_label]).then(function() {
+            Promise.all([p_iri, p_label, p_label_null]).then(function() {
                 
                 var trace1 = {
                     y: dataIRI,
@@ -163,12 +185,20 @@
                   let trIRI = `<td>IRI</td>
                                <td>${dataIRI.length.toLocaleString()}</td>
                                <td>${maxIRI}</td>
-                               <td>${minIRI}</td>`;
+                               <td>${minIRI}</td>
+                               <td>${dataIRI.filter(i => i === 1).length.toLocaleString()}</td>
+                               <td>${dataIRI.filter(i => i === 2).length.toLocaleString()}</td>
+                               <td>${dataIRI.filter(i => i >= 2).length.toLocaleString()}</td>
+                               <td>0</td>`;
                   document.getElementById('trIRI').innerHTML = trIRI;
                   let trLabel = `<td>rdfsLabel</td>
                                <td>${dataLabel.length.toLocaleString()}</td>
                                <td>${maxLabel}</td>
-                               <td>${minLabel}</td>`;
+                               <td>${minLabel}</td>
+                               <td>${dataLabel.filter(i => i === 1).length.toLocaleString()}</td>
+                               <td>${dataLabel.filter(i => i === 2).length.toLocaleString()}</td>
+                               <td>${dataLabel.filter(i => i >= 2).length.toLocaleString()}</td>
+                               <td>${dataLabelNulls[0].toLocaleString()}</td>`;
                   document.getElementById('trLabels').innerHTML = trLabel;
 
                   document.getElementById("loader").style.display = "none";

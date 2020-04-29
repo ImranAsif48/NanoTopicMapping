@@ -84,7 +84,7 @@ if(mysqli_num_rows($result) > 0)
        $data[]=$row;
     }
 }
-
+mysqli_close($con);
 echo json_encode($data);
 ?>
 

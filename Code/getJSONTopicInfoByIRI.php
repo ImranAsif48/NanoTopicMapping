@@ -4,16 +4,22 @@ require_once 'config.php';
 header('Access-Control-Allow-Origin: *');
 
 $data = array();
+$option = $_GET['opt'];
+$query = '';
 
-// $query = "Select t.IRI, Count(t.IRI) GroupCount from topic t 
-//              INNER JOIN nanopubs np ON t.npId = np.npId  
-//                  group by t.IRI
-//                  having (count(t.IRI) >= 2) 
-//                  order by count(t.IRI) desc";
-$query = "Select t.IRI, Count(t.IRI) GroupCount from topic t 
+if($option=='all')
+{
+    $query = "Select t.IRI, Count(t.IRI) GroupCount from topic t 
+                group by t.IRI";
+}
+else
+{
+    $query = "Select t.IRI, Count(t.IRI) GroupCount from topic t 
                  group by t.IRI
                  having (count(t.IRI) >= 2) 
-                 order by count(t.IRI) desc";
+                 order by count(t.IRI) desc";    
+}
+
 $result = mysqli_query($con, $query);
 if(mysqli_num_rows($result) > 0)
 {    

@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
         <link href="css/bootstrap-4.3.1.min.css" rel="stylesheet" />
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <title>Home Page</title>
+        <title>Box Plot Page</title>
     </head>
     <body>
         <div class="container-fluid h-100">
@@ -38,32 +38,6 @@
         <script src="Scripts/jquery-3.4.1.min.js"></script>
         <script src="Scripts/popper-1.14.7.min.js"></script>
         <script src="Scripts/bootstrap-4.3.1.min.js"></script>
-       
-
-        <script>
-    //////////////////////////////////
-    //// Loader 
-    // var start = performance.now();
-    // function hideLoader() {
-    //   //document.getElementById("loader").style.display = "none";
-    //   //document.getElementById("map").style.display = "block";
-    //   var end = performance.now();
-    //   let time = millisToMinutesAndSeconds(end - start);
-    //   $('#SearchTime').html(`Request time  (${time} seconds)`);
-    // }
-    // function millisToMinutesAndSeconds(millis) {
-    //             var minutes = Math.floor(millis / 60000);
-    //             var seconds = ((millis % 60000) / 1000).toFixed(0);
-    //             return minutes + " minutes, " + (seconds < 10 ? '0' : '') + seconds;
-    //         }
-    // $('#plot').load('show_box_plot.html', function(){
-    //     var end = performance.now();
-    //     let time = millisToMinutesAndSeconds(end - start);
-    //     $('#SearchTime').html(`Request time  (${time} seconds)`);
-    //     hideLoader();
-    // });
-    //hideLoader();
-    </script>
     </body>
 </html>
 
