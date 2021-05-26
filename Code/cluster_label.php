@@ -19,34 +19,49 @@
  */
  
 // DB table to use
-$table = 'label_cluster';
+$table = 'new_topic_label_cluster';
  
 // Table's primary key
-$primaryKey = 'c_id';
+$primaryKey = 'rdfsLabel';
  
 // Array of database columns which should be read and sent back to DataTables.
 // The `db` parameter represents the column name in the database, while the `dt`
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
 $columns = array(
-    array( 'db' => 'rdfsLabel', 'dt' => 0),
-    array( 'db' => 'topicIRI', 'dt' => 2),
+    array( 'db' => 'rdfsLabel', 'dt' => 0, 
+    'formatter' => function( $d, $row ) {
+             $resolve_url = '';
+            // if(strrpos($row["topicIRI"], "www.nextprot")>0)
+            // {
+            //     $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];
+            // }
+            // else if(strrpos($row["topicIRI"],"identifiers.org")>0){
+            //     $splitIRI = explode("/",$row["topicIRI"]);
+            //     $resolve_url = $row["topicIRI"];
+            // }
+        return 'Cluster (<a href="#">' . $row["rdfsLabel"] . '</a>)';
+     }
+    ),
+    //array( 'db' => 'topicIRI', 'dt' => 2),
     array( 'db' => 'nano_count',  'dt' => 1,
     'formatter' => function( $d, $row ) {
         $totalNano = $row["nano_count"];
         $display_content = '';
         $resolve_url = '';
-            if(strrpos($row["topicIRI"], "www.nextprot")>0)
-            {
-                $display_content = "nextprot:". explode("#",$row["topicIRI"])[1];
-                $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];
-            }
-            else if(strrpos($row["topicIRI"],"identifiers.org")>0){
-                $splitIRI = explode("/",$row["topicIRI"]);
-                $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
-                $resolve_url = $row["topicIRI"];
-            }
-                return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$row["topicIRI"].'\', '.$totalNano.', \''.$display_content.'\', \''.$resolve_url.'\')">'. $row["nano_count"] .'</span>';
+        $label = '';
+            // if(strrpos($row["topicIRI"], "www.nextprot")>0)
+            // {
+            //     $display_content = "nextprot:". explode("#",$row["topicIRI"])[1];
+            //     $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];
+            // }
+            // else if(strrpos($row["topicIRI"],"identifiers.org")>0){
+            //     $splitIRI = explode("/",$row["topicIRI"]);
+            //     $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
+            //     $resolve_url = $row["topicIRI"];
+            // }
+            $label = $row["rdfsLabel"];
+            return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$label.'\', '.$totalNano.', \''.$label.'\', \'\')">'. $row["nano_count"] .'</span>';
          }  
     ),
 );
@@ -56,7 +71,8 @@ $sql_details = array(
     'user' => 'ia48',
     'pass' => '7INB446Kle',
     'db'   => 'ia48',
-    'host' => 'www.macs.hw.ac.uk'
+    //'host' => 'www.macs.hw.ac.uk'
+    'host' => 'mysql-server-1'
 );
  
  

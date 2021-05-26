@@ -22,6 +22,19 @@
                         <div class="card">
                             <div class="card-header">
                                 Boxplot b/w IMS & IMS+Merge <small id="SearchTime"></small>
+                                <div class="dropdown dropleft" style="float:right;cursor:pointer;">
+                                    <!--Trigger-->
+                                    
+                                    <a  type="button" id="dropdownMenu2" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                                        
+
+                                    <!--Menu-->
+                                    <div class="dropdown-menu dropdown-primary">
+                                        <a class="dropdown-item" href="#" onclick="downloadimage('svg', 800, 1380, 'image')"><i class="fas fa-file-export"></i> Export to SVG</a>
+                                        <a class="dropdown-item" href="#" onclick="downloadimage('png', 800, 1380, 'image')"><i class="fas fa-file-export"></i> Export to PNG</a>
+                                    </div>
+                                </div> 
                             </div>
                             <div class="card-body">
                                 <div id="plot">
@@ -87,6 +100,13 @@
                 var seconds = ((millis % 60000) / 1000).toFixed(0);
                 return minutes + " minutes, " + (seconds < 10 ? '0' : '') + seconds;
             }
+
+            function downloadimage(format, height, width, filename) {
+                var p = document.getElementById('plot');
+                Plotly.downloadImage(p, 
+                 {format: format, height: height, width: width, filename:
+                filename});
+            };
         </script>
     </body>
 </html>

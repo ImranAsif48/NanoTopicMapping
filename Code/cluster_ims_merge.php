@@ -20,7 +20,10 @@
  
  ///////////////////////////////////////////
  /// For Exact match
- $query = "SELECT * FROM exact_match_iri_merge";
+ $query = "SELECT * FROM new_topic_ims_cluster_iris
+            WHERE nano_count is NOT null
+            ORDER BY c_id ASC, nano_count DESC";
+
  $resExact = mysqli_query($con, $query);
  $spanLeft = '';
  $exactArray = array();
@@ -51,7 +54,7 @@
 
 //  }
 // DB table to use
-$table = 'ims_merge_cluster';
+$table = 'new_topic_ims_cluster';
  
 // Table's primary key
 $primaryKey = 'c_id';
@@ -61,41 +64,15 @@ $primaryKey = 'c_id';
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
 $columns = array(
-    array( 'db' => 'topicIRI', 'dt' => 0, 
+    array( 'db' => 'c_id', 'dt' => 0, 
            'formatter' => function( $d, $row ) {
-            $display_content = '';
-            $resolve_url = '';
-            
-            if(strrpos($d, "www.nextprot")>0)
-            {
-                $display_content = "nextprot:". explode("#",$d)[1];
-                $resolve_url = "https://www.nextprot.org/entry/". explode("#",$d)[1];
-            }
-            else if(strrpos($d,"identifiers.org")>0){
-                $splitIRI = explode("/",$d);
-                $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
-                $resolve_url = $d;
-            }
-            return '<a href="'.$resolve_url.'" target="_blank">'. $display_content .'</a>'  ;
+            return ''  ;
         }
     ),
-    array( 'db' => 'nano_count',  'dt' => 1,
+    array( 'db' => 'c_IRI',  'dt' => 1,
     'formatter' => function( $d, $row ) {
-        $totalNano = $row["nano_count"];
-        $display_content = '';
-        $resolve_url = '';
-            if(strrpos($row["topicIRI"], "www.nextprot")>0)
-            {
-                $display_content = "nextprot:". explode("#",$row["topicIRI"])[1];
-                $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];
-            }
-            else if(strrpos($row["topicIRI"],"identifiers.org")>0){
-                $splitIRI = explode("/",$row["topicIRI"]);
-                $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
-                $resolve_url = $row["topicIRI"];
-            }
-            return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$row["topicIRI"].'\', '.$totalNano.', \''.$display_content.'\', \''.$resolve_url.'\')">'. $row["nano_count"] .'</span>';
-         }  
+            return ''  ;
+        }  
     ),
 );
  
@@ -104,7 +81,8 @@ $sql_details = array(
     'user' => 'ia48',
     'pass' => '7INB446Kle',
     'db'   => 'ia48',
-    'host' => 'www.macs.hw.ac.uk'
+    //'host' => 'www.macs.hw.ac.uk'
+    'host' => 'mysql-server-1'
 );
  
  

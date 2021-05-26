@@ -29,6 +29,7 @@ if(mysqli_num_rows($result) > 0)
     }
 }
 
+mysqli_close($con);
 echo json_encode($data);
 //====================================================================================
 //echo json_encode($obj); // All data in on json file.

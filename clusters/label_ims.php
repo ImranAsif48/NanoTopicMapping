@@ -9,7 +9,7 @@
         <link href="../css/dataTables.bootstrap4.min.css" rel="stylesheet" />
         <link href="../css/pagination.css" rel="stylesheet" type="text/css"/>
         <link href="../css/style.css" rel="stylesheet" type="text/css"/>
-        <title>rdfsLabels Cluster</title>
+        <title>rdfsLabels + IMS Cluster</title>
     </head>
     <body>
         <div class="container-fluid h-100">
@@ -17,7 +17,7 @@
                <?php require('../menu.php') ?>
             </header>
             <br />
-            <!-- <div id="loader"></div> -->
+            <div id="loader"></div>
             <main class="row">
                     <div id="divTable" class="col-md-12">
                         <br />
@@ -28,7 +28,9 @@
                             <div class="card-body">
                                 <table id="tbl" class="table table-striped table-bordered" style="width:100%" >
                                     <thead>
-                                        <th>rdfsLabel Clusters</th>
+                                        <th>rdfsLabel</th>
+                                        <th># of Nanopublications</th>
+                                        <th>Topic IRI (IMS)</th>
                                         <th># of Nanopublications</th>
                                     </thead>
                                     <tbody id="tblTopic">
@@ -79,29 +81,66 @@
         <script src="../Scripts/pagination.min.js"></script>
         <script>
             $(document).ready(function() {
-                var start = performance.now();
-                $('#tbl').DataTable( {
-                    "processing": true,
-                    "serverSide": true,
-                    "ajax": {
-                        "type"   : "GET",
-                        "url"    : "../Code/cluster_label.php",
-                        "dataSrc": function (json) {
-                            let end = performance.now();
-                            let time = millisToMinutesAndSeconds(end - start);
-                            $('#SearchTime').html(`Processing time  (${time} seconds)`);
-                            return json.data;
-                        }
-                    },
-                    "order": [[ 1, "desc" ], [ 0, 'desc' ]]
-                } );
+                // $('#tbl').DataTable( {
+                //     "processing": true,
+                //     "serverSide": true,
+                //     "ajax": "../Code/cluster_label.php",
+                //     "order": [[ 1, "desc" ], [ 0, 'desc' ]]
+                // } );
+                // $('#tbl').DataTable( {
+                //     "processing": true,
+                //     "order": [[ 1, "desc" ]]
+                // } );
 
-                function millisToMinutesAndSeconds(millis) {
-                    var minutes = Math.floor(millis / 60000);
-                    var seconds = ((millis % 60000) / 1000).toFixed(4);
-                    //return minutes + "." + (seconds < 10 ? '0' : '') + seconds;
-                    return seconds;
-                }
+                $.ajax({
+                            url: '../Code/cluster_label_ims.php',
+                            data: {},
+                            method: "GET",
+                            dataType: "json",
+                            success: function(response) {
+                               let jsonData = response;
+                               let table = '';
+
+                               for(let i=0;i<jsonData.length;i++)
+                               {
+                                    let totalNanoLabel = jsonData[i].labelNanoCount;
+                                    let totalNanoIMS = jsonData[i].nano_count;
+                                    let display_content = '';
+                                    let resolve_url = '';
+                                    let label = '';
+
+                                    if(jsonData[i].topicIRI.indexOf("www.nextprot") !== -1)
+                                    {
+                                        display_content = "nextprot:"+ jsonData[i].topicIRI.split("#")[1];
+                                        resolve_url = "https://www.nextprot.org/entry/"+ jsonData[i].topicIRI.split("#")[1];
+                                    }
+                                    else if(jsonData[i].topicIRI.indexOf("identifiers.org") !== -1){
+                                        let splitIRI = jsonData[i].topicIRI.split("/");
+                                        display_content = "id-"+ splitIRI[splitIRI.length - 2] + ":" + splitIRI[splitIRI.length - 1];
+                                        resolve_url = jsonData[i].topicIRI;
+                                    }
+                                    label = jsonData[i].rdfsLabel;
+
+                                    table += `<tr>
+                                        <td><a href="${resolve_url}" target="_blank">${label}</a></td>
+                                        <td><span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano('${jsonData[i].topicIRI}', ${totalNanoLabel}, '${label}', '${resolve_url}')"> ${totalNanoLabel}</span></td>
+                                        <td><a href="${resolve_url}" target="_blank">${display_content}</a></td>
+                                        <td><span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano('${jsonData[i].topicIRI}', ${totalNanoIMS}, '${display_content}', '${resolve_url}')"> ${totalNanoIMS}</span></td>
+                                    </tr>`;
+                               }
+
+                               $('#tblTopic').html(table);
+                               $('#loader').hide();
+                               //$('#tbl').DataTable();
+                               $('#tbl').DataTable( {
+                                    //"order": [[ 1, "desc" ]]
+                                    "ordering": false
+                                } );
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) { 
+                                alert( "Request failed: " + textStatus );
+                             }
+                        })
             });
 
             function AJAXCallForNano(oiri, count, label, resolveIRI)
@@ -114,7 +153,7 @@
                 $('#pagesNano').pagination({
                 dataSource: function(done) {
                         $.ajax({
-                            url: '../Code/getNanoInfo.php',
+                            url: '../Code/getTopicInfo.php',
                             data: { lbl :label },
                             method: "GET",
                             dataType: "json",
@@ -135,7 +174,7 @@
                     let d = '';
                     for(var i=0;i<result.length;i++)
                     {
-                        d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].npHash}</a><br />`;
+                        d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].trustyURI}</a><br />`;
                     }
                 
                 //d += `<div class="hr-line-dashed">`;    

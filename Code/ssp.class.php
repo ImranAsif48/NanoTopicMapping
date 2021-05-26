@@ -86,54 +86,103 @@ class SSP {
                     else{
 						if($flag==false)
 						{
+							$totalNano = 0;
+							$rdfsLabel = '';
 							foreach( $exactArray as $item ){
-								if ( is_array( $item ) && isset( $item['topicIRI'] )){
-									if ( $item['topicIRI'] == $data[$i]['topicIRI'] ){ // or other string comparison
-										$totalNano_ex = $item["total_nano_2"];
+								if ( is_array( $item ) && isset( $item['c_id'] )){
+									if ( $item['c_id'] == $data[$i]['c_id'] ){ // or other string comparison
+										if($totalNano==0)
+											$rdfsLabel = $item['rdfsLabel'];
+
+										$totalNano += $item["nano_count"];
 										$display_content_ex = '';
 										$resolve_url_ex = '';
-										if(strrpos($item["mappingIRI"], "www.nextprot")>0)
+										if(strrpos($item["ims_iri"], "www.nextprot")>0)
 										{
-											$display_content_ex = "nextprot:". explode("#",$item["mappingIRI"])[1];
-											$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["mappingIRI"])[1];
+											$display_content_ex = "nextprot:". explode("#",$item["ims_iri"])[1];
+											$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["ims_iri"])[1];
+
+											if(count(explode("#",$item["ims_iri"]))>1)
+											{
+												$display_content_ex = "nextprot:". explode("#",$item["ims_iri"])[1];
+												$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["ims_iri"])[1];    
+											}
+											else{
+												$splitIRI = explode("/",$item["ims_iri"]);
+												$display_content_ex = "nextprot:". $splitIRI[count($splitIRI )-1];
+												$resolve_url_ex = $item["ims_iri"];
+											}
 										}
-										else if(strrpos($item["mappingIRI"],"identifiers.org")>0){
-											$splitIRI = explode("/",$item["mappingIRI"]);
+										else if(strrpos($item["ims_iri"], "linkedlifedata.com")>0)
+										{
+											$splitIRI = explode("/",$item["ims_iri"]);
+											$display_content_ex = "linkedlifedata:". $splitIRI[count($splitIRI )-1];
+											$resolve_url_ex = $item["ims_iri"];
+										}
+										else if(strrpos($item["ims_iri"],"identifiers.org")>0){
+											$splitIRI = explode("/",$item["ims_iri"]);
 											$display_content_ex = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
-											$resolve_url_ex = $rowExact["mappingIRI"];
+											$resolve_url_ex = $item["ims_iri"];
 										}
 										
-										$spanLeft .= '<br /><a style="margin-left:4%;" href="'.$resolve_url_ex.'" target="_blank">'. $display_content_ex .'</a>';
+										$spanLeft .= '<br /><a style="margin-left:2%;" href="'.$resolve_url_ex.'" target="_blank">- '. $display_content_ex .'</a>';
 									}
 								}
 							}
 							//echo $spanLeft;
-							$row[ $column['dt'] ] = $column['formatter']( $data[$i][ $column['db'] ], $data[$i] ) . $spanLeft;
+							if($totalNano==0)
+							{
+								$columnTotal = $columns[$j+1];
+								$str = $columnTotal['formatter']( $data[$i][ $column['db'] ], $data[$i] );
+								$splitNanoCount = explode(">",$str);
+								$totalNano = $splitNanoCount[1];
+							}
+								
+							$spanLeft .= '<br /><span style="margin-left:2%;cursor:pointer;color:#007bff" onclick="AJAXCallForMoreIRI('.$data[$i]['c_id'].')">- More...</span>';
+							$row[ $column['dt'] ] = '<span style="color: #007bff;font-size:18px;">'.$rdfsLabel. ' ('. $totalNano .')</span>' . $spanLeft;
 							$flag = true;
 						}
 						else{
 							foreach( $exactArray as $item ){
-								if ( is_array( $item ) && isset( $item['topicIRI'] )){
-									if ( $item['topicIRI'] == $data[$i]['topicIRI'] ){ // or other string comparison
-										$totalNano_ex = $item["total_nano_2"];
+								if ( is_array( $item ) && isset( $item['c_id'] )){
+									if ( $item['c_id'] == $data[$i]['c_id'] ){ // or other string comparison
+										$totalNano_ex = $item["nano_count"];
 										$display_content_ex = '';
 										$resolve_url_ex = '';
-										if(strrpos($item["mappingIRI"], "www.nextprot")>0)
+										if(strrpos($item["ims_iri"], "www.nextprot")>0)
 										{
-											$display_content_ex = "nextprot:". explode("#",$item["mappingIRI"])[1];
-											$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["mappingIRI"])[1];
+											$display_content_ex = "nextprot:". explode("#",$item["ims_iri"])[1];
+											$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["ims_iri"])[1];
+
+											if(count(explode("#",$item["ims_iri"]))>1)
+											{
+												$display_content_ex = "nextprot:". explode("#",$item["ims_iri"])[1];
+												$resolve_url_ex = "https://www.nextprot.org/entry/". explode("#",$item["ims_iri"])[1];    
+											}
+											else{
+												$splitIRI = explode("/",$item["ims_iri"]);
+												$display_content = "nextprot:". $splitIRI[count($splitIRI )-1];
+												$resolve_url = $item["ims_iri"];
+											}
 										}
-										else if(strrpos($item["mappingIRI"],"identifiers.org")>0){
-											$splitIRI = explode("/",$item["mappingIRI"]);
+										else if(strrpos($item["ims_iri"], "linkedlifedata.com")>0)
+										{
+											$splitIRI = explode("/",$item["ims_iri"]);
+											$display_content = "linkedlifedata:". $splitIRI[count($splitIRI )-1];
+											$resolve_url = $item["ims_iri"];
+										}
+										else if(strrpos($item["ims_iri"],"identifiers.org")>0){
+											$splitIRI = explode("/",$item["ims_iri"]);
 											$display_content_ex = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
-											$resolve_url_ex = $rowExact["mappingIRI"];
+											$resolve_url_ex = $item["ims_iri"];
 										}
 										
-										$spanRight .= '<br /><span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$rowExact["mappingIRI"].'\', '.$totalNano_ex.', \''.$display_content_ex.'\', \''.$resolve_url_ex.'\')">'. $totalNano_ex .'</span>';
+										$spanRight .= '<br /><span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$item["ims_iri"].'\', '.$totalNano_ex.', \''.$display_content_ex.'\', \''.$resolve_url_ex.'\')">'. $totalNano_ex .'</span>';
 									}
 								}
 							}
-							$row[ $column['dt'] ] = $column['formatter']( $data[$i][ $column['db'] ], $data[$i] ) . $spanRight ;
+							//#007bff
+							$row[ $column['dt'] ] = $spanRight ;
 						}
 				    }
 				}

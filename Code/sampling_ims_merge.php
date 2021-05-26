@@ -1,5 +1,5 @@
 <?php
- 
+ require_once 'config.php';
 /*
  * DataTables example server-side processing script.
  *
@@ -18,8 +18,22 @@
  * Easy set variables
  */
  
+ ///////////////////////////////////////////
+ /// For Exact match
+ $query = "SELECT * FROM exact_match_iri_merge";
+ $resExact = mysqli_query($con, $query);
+ $spanLeft = '';
+ $exactArray = array();
+ if(mysqli_num_rows($resExact) > 0)
+ {    
+     while($rowExact = mysqli_fetch_assoc($resExact))
+     {
+        $exactArray[] = $rowExact;
+     }
+ }
+
 // DB table to use
-$table = 'ims_cluster';
+$table = 'exact_match_unique_iri';
  
 // Table's primary key
 $primaryKey = 'c_id';
@@ -44,7 +58,7 @@ $columns = array(
                 $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
                 $resolve_url = $d;
             }
-                    return '<a href="'.$resolve_url.'" target="_blank">'. $display_content .'</a>' ;
+            return '<a href="'.$resolve_url.'" target="_blank">'. $display_content .'</a>'  ;
         }
     ),
     array( 'db' => 'nano_count',  'dt' => 1,
@@ -62,7 +76,7 @@ $columns = array(
                 $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
                 $resolve_url = $row["topicIRI"];
             }
-                return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$row["topicIRI"].'\', '.$totalNano.', \''.$display_content.'\', \''.$resolve_url.'\')">'. $row["nano_count"] .'</span>';
+            return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$row["topicIRI"].'\', '.$totalNano.', \''.$display_content.'\', \''.$resolve_url.'\')">'. $row["nano_count"] .'</span>';
          }  
     ),
 );
@@ -83,6 +97,7 @@ $sql_details = array(
  
 require( 'ssp.class.php' );
  
+//var_dump($columns);
 echo json_encode(
-    SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns )
+    SSP::ims_merge( $_GET, $sql_details, $table, $primaryKey, $columns, $exactArray )
 );

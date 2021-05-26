@@ -163,6 +163,174 @@ svg{
   margin:0 auto;
 } 
 
+.card {
+  overflow: hidden;
+}
+
+.card-block .rotate {
+  z-index: 8;
+  float: right;
+  height: 100%;
+}
+
+.card-block .rotate i {
+  color: rgba(20, 20, 20, 0.15);
+  position: absolute;
+  left: 0;
+  left: auto;
+  right: -10px;
+  bottom: 0;
+  display: block;
+  -webkit-transform: rotate(-44deg);
+  -moz-transform: rotate(-44deg);
+  -o-transform: rotate(-44deg);
+  -ms-transform: rotate(-44deg);
+  transform: rotate(-44deg);
+}
+
+.card-inverse{
+  color: rgba(255,255,255,.65);
+}
+.card-block {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+
+/* IOS Radio buttons  */
+.ios-segmented-control {
+  --background: rgba(239,239,240,1);
+  background: var(--background);
+  border-radius: 9px;
+  margin: 0;
+  padding: 2px;
+  border: none;
+  outline: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ios-segmented-control .option {
+  position: relative;
+  cursor: pointer;
+}
+
+.ios-segmented-control .option:hover input:not(:checked) + label span, .ios-segmented-control .option:active input:not(:checked) + label span, .ios-segmented-control .option:focus input:not(:checked) + label span {
+  opacity: .2;
+}
+
+.ios-segmented-control .option:active input:not(:checked) + label span {
+  transform: scale(.95);
+}
+
+.ios-segmented-control .option label {
+  position: relative;
+  display: block;
+  text-align: center;
+  padding: 3px 6vmin;
+  background: rgba(255,255,255,0);
+  font-weight: 500;
+  color: rgba(0,0,0,1);
+  font-size: 14px;
+}
+
+.ios-segmented-control .option label::before, .ios-segmented-control .option label::after {
+  content: '';
+  width: 1px;
+  background: rgba(142,142,147,.15);
+  position: absolute;
+  top: 14%;
+  bottom: 14%;
+  border-radius: 10px;
+  will-change: background;
+  -webkit-transition: background .2s ease;
+  transition: background .2s ease;
+}
+
+.ios-segmented-control .option label::before {
+  left: 0;
+  transform: translateX(-.5px);
+}
+
+.ios-segmented-control .option label::after {
+  right: 0;
+  transform: translateX(.5px);
+}
+
+.ios-segmented-control .option:first-of-type {
+  grid-column: 1;
+  grid-row: 1;
+  box-shadow: none;
+}
+
+.ios-segmented-control .option:first-of-type label::before {
+  opacity: 0;
+}
+
+.ios-segmented-control .option:last-of-type label::after {
+  opacity: 0;
+}
+
+.ios-segmented-control .option input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border: none;
+  opacity: 0;
+}
+
+.ios-segmented-control .selection {
+  background: rgba(255,255,255,1);
+  border: .5px solid rgba(0,0,0,0.04);
+  box-shadow: 0 3px 8px 0 rgba(0,0,0,0.12), 0 3px 1px 0 rgba(0,0,0,0.04);
+  border-radius: 7px;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  will-change: transform;
+  -webkit-transition: transform .2s ease;
+  transition: transform .2s ease;
+}
+
+.ios-segmented-control .option label span {
+  display: block;
+  position: relative;
+  z-index: 2;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+  will-change: transform;
+}
+
+.ios-segmented-control .option input:checked+label::before, .ios-segmented-control .option input:checked+label::after {
+  background: var(--background);
+  z-index: 1;
+}
+
+.ios-segmented-control .option input:checked+label {
+  cursor: pointer;
+}
+
+.ios-segmented-control .option input+label {
+  cursor: pointer;
+}
+
 /* .icon{
   height: 1em!important;
   width: 1em!important;

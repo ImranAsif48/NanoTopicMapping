@@ -2,45 +2,53 @@
 require_once 'config.php';
 header('Access-Control-Allow-Origin: *');
 
-$search = $_GET['term'];
+$searchTerm = str_replace("'","\\'",$_GET['term']);;
 $option = $_GET['option'];
+$searchBy = $_GET['search'];
 $data = array();
 $query = '';
-if($option == 'proteinName')
-{
-    $query = "SELECT DISTINCT t.rdfsLabel as label FROM topic t 
-            WHERE t.rdfsLabel like '%$search%'
-            LIMIT 10";
-}
-else if($option == 'proteinId')
-{
-    $query = "SELECT DISTINCT SUBSTRING_INDEX(SUBSTRING_INDEX(t.IRI, '#', 2), '#', -1) AS label
-               FROM topic t 
-                WHERE SUBSTRING_INDEX(SUBSTRING_INDEX(t.IRI, '#', 2), '#', -1) like '%$search%'
-                LIMIT 10";
-}
-else if($option == 'gene')
-{
-    $query = "SELECT LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(t.rdfsLabel, ' ( ', 2), ' ( ', -1), 
-                length(SUBSTRING_INDEX(SUBSTRING_INDEX(t.rdfsLabel, ' ( ', 2), ' ( ', -1)) - 1) as label 
-                FROM topic t
-                WHERE LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(t.rdfsLabel, ' ( ', 2), ' ( ', -1), 
-                    length(SUBSTRING_INDEX(SUBSTRING_INDEX(t.rdfsLabel, ' ( ', 2), ' ( ', -1)) - 1) like '%$search%'
-                LIMIT 10";
-}
-else if($option == 'iri')
-{
-    $query = "SELECT  t.IRI  as label FROM topic t
-                WHERE t.IRI LIKE '%$search%'
-                LIMIT 10";
-}
-else if($option == 'label')
-{
-    $query = "SELECT  t.rdfsLabel  as label FROM topic t
-                WHERE t.rdfsLabel LIKE '%$search%'
-                LIMIT 10";
-}
 
+if($searchBy == 'iri')
+{
+    if($option == 'iri')
+    {
+        $query = "SELECT DISTINCT topicIRI as label FROM new_topic_iri_cluster
+                    WHERE topicIRI LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+    else if($option == 'label')
+    {
+        $query = "SELECT DISTINCT iri as label FROM new_topic_label_cluster
+                    WHERE iri LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+    else if($option == 'label_ims')
+    {
+        $query = "SELECT DISTINCT ims_iri as label FROM new_topic_ims_cluster_iris
+                    WHERE ims_iri LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+}
+else{
+    if($option == 'iri')
+    {
+        $query = "SELECT DISTINCT rdfsLabel as label FROM new_topic_iri_cluster
+                    WHERE rdfsLabel LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+    else if($option == 'label')
+    {
+        $query = "SELECT DISTINCT rdfsLabel as label FROM new_topic_label_cluster
+                    WHERE rdfsLabel LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+    else if($option == 'label_ims')
+    {
+        $query = "SELECT DISTINCT rdfsLabel as label FROM new_topic_ims_cluster_iris
+                    WHERE rdfsLabel LIKE '$searchTerm%'
+                    LIMIT 10";
+    }
+}
 //and np.dataset = 'nextprot'
 ////////////////////////////////////////////////////////////////
 $result = mysqli_query($con, $query);
@@ -52,5 +60,6 @@ if(mysqli_num_rows($result) > 0)
     }
 }
 
+mysqli_close($con);
 echo json_encode($data);
 ?>

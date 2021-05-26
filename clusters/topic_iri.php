@@ -9,7 +9,7 @@
         <link href="../css/dataTables.bootstrap4.min.css" rel="stylesheet" />
         <link href="../css/pagination.css" rel="stylesheet" type="text/css"/>
         <link href="../css/style.css" rel="stylesheet" type="text/css"/>
-        <title>Topic IRI Cluster</title>
+        <title>IRI Concept Grouping</title>
     </head>
     <body>
         <div class="container-fluid h-100">
@@ -28,7 +28,7 @@
                             <div class="card-body" id="divTable">
                                 <table id="tbl" class="table table-striped table-bordered" style="width:100%" >
                                     <thead>
-                                        <th>Topic IRI</th>
+                                        <th>IRI</th>
                                         <th># of Nanopublications</th>
                                     </thead>
                                     <tbody id="tblTopic">
@@ -80,12 +80,29 @@
         <script src="../Scripts/pagination.min.js"></script>
         <script>
         $(document).ready(function() {
+            var start = performance.now();
             $('#tbl').DataTable( {
                 "processing": true,
                 "serverSide": true,
-                "ajax": "../Code/cluster_topic_iri.php",
-                "order": [[ 1, "desc" ]]
+                "ajax": {
+                    "type"   : "GET",
+                    "url"    : "../Code/cluster_topic_iri.php",
+                    "dataSrc": function (json) {
+                        let end = performance.now();
+                        let time = millisToMinutesAndSeconds(end - start);
+                        $('#SearchTime').html(`Processing time  (${time} seconds)`);
+                        return json.data;
+                    }
+                },
+                "order": [[ 1, "desc" ], [ 0, 'desc' ]]
             } );
+            
+            function millisToMinutesAndSeconds(millis) {
+                var minutes = Math.floor(millis / 60000);
+                var seconds = ((millis % 60000) / 1000).toFixed(4);
+                //return minutes + "." + (seconds < 10 ? '0' : '') + seconds;
+                return seconds;
+            }
         } );
             function AJAXCallForNano(oiri, count, label, resolveIRI)
             {
@@ -97,7 +114,7 @@
                 $('#pagesNano').pagination({
                 dataSource: function(done) {
                         $.ajax({
-                            url: '../Code/getTopicInfo.php',
+                            url: '../Code/getNanoInfo.php',
                             data: { iri :oiri },
                             method: "GET",
                             dataType: "json",
@@ -118,7 +135,7 @@
                     let d = '';
                     for(var i=0;i<result.length;i++)
                     {
-                        d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].trustyURI}</a><br />`;
+                        d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].npHash}</a><br />`;
                     }
                 
                 //d += `<div class="hr-line-dashed">`;    

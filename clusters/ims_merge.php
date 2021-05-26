@@ -9,7 +9,7 @@
         <link href="../css/dataTables.bootstrap4.min.css" rel="stylesheet" />
         <link href="../css/pagination.css" rel="stylesheet" type="text/css"/>
         <link href="../css/style.css" rel="stylesheet" type="text/css"/>
-        <title>IMS + Merge Cluster</title>
+        <title>IMS Concept Grouping</title>
     </head>
     <body>
         <div class="container-fluid h-100">
@@ -26,14 +26,16 @@
                                 Summary - <small id="SearchTime"></small>
                             </div>
                             <div class="card-body">
-                                <table id="tbl" class="table table-striped table-bordered" style="width:100%" >
-                                    <thead>
-                                        <th>Topic IRI</th>
-                                        <th># of Nanopublications</th>
-                                    </thead>
-                                    <tbody id="tblTopic">
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table id="tbl" class="table table-striped table-bordered dt-responsive nowrap" >
+                                        <thead>
+                                            <th>IMS</th>
+                                            <th># of Nanopublications</th>
+                                        </thead>
+                                        <tbody id="tblTopic">
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,12 +81,30 @@
         <script src="../Scripts/pagination.min.js"></script>
         <script>
          $(document).ready(function() {
+            var start = performance.now();
             $('#tbl').DataTable( {
                 "processing": true,
                 "serverSide": true,
-                "ajax": "../Code/cluster_ims_merge.php",
-                "order": [[ 1, "desc" ]]
+                "responsive": true,
+                "ajax": {
+                    "type"   : "GET",
+                    "url"    : "../Code/cluster_ims_merge.php",
+                    "dataSrc": function (json) {
+                        let end = performance.now();
+                        let time = millisToMinutesAndSeconds(end - start);
+                        $('#SearchTime').html(`Processing time  (${time} seconds)`);
+                        return json.data;
+                    }
+                },
+                "order": [[ 1, "desc" ], [ 1, "desc" ]]
             } );
+
+            function millisToMinutesAndSeconds(millis) {
+                var minutes = Math.floor(millis / 60000);
+                var seconds = ((millis % 60000) / 1000).toFixed(4);
+                //return minutes + "." + (seconds < 10 ? '0' : '') + seconds;
+                return seconds;
+            }
         } );
             function AJAXCallForNano(oiri, count, label, resolveIRI)
             {
@@ -118,6 +138,75 @@
                     for(var i=0;i<result.length;i++)
                     {
                         d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].trustyURI}</a><br />`;
+                    }
+                
+                //d += `<div class="hr-line-dashed">`;    
+                //var html = template(data);
+                $("#divContent").html(d);
+            }
+        })
+            }
+            ///////////////////////////////////////////////////////////////////////
+            // Display more IMS IRIs
+            function AJAXCallForMoreIRI(cId)
+            {
+                $('#modalTitle').html(`More IMS IRIs`);
+                $('#divContent').hide();
+                $('#divSpin').show();
+                document.getElementById("btnModal").click();
+                $('#pagesNano').pagination({
+                dataSource: function(done) {
+                        $.ajax({
+                            url: '../Code/get_more_ims_iris.php',
+                            data: { c_id :cId },
+                            method: "GET",
+                            dataType: "json",
+                            success: function(response) {
+                                $('#modalTitle').html(`More IMS IRIs (Total: ${response.length})`);
+                                done(response);
+                                $('#divContent').show();
+                                $('#divSpin').hide();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) { 
+                                alert( "Request failed: " + textStatus );
+                             }
+                        })
+                    },
+            pageSize: 10,
+            callback: function(data, pagination) {
+                // template method of yourself
+                    let result = data;
+                    let d = '';
+                    for(var i=0;i<result.length;i++)
+                    {
+                        //let display_content_ex = '';
+						//let resolve_url_ex = '';
+                        let iri = result[i].ims_iri;
+                        // if(iri.indexOf("www.nextprot")>-1)
+						// {
+						// 	if(iri.split("#").length>1)
+						// 	{
+						// 		display_content_ex = "nextprot:"+ iri.split("#")[1];
+						// 	    resolve_url_ex = "https://www.nextprot.org/entry/"+ iri.split("#")[1];   
+						// 	}
+						// 	else{
+						// 		let splitIRI = iri.split("/");
+						// 		display_content_ex = "nextprot:"+ splitIRI[splitIRI.length-1];
+						// 		resolve_url_ex = iri;
+						// 	  }
+						// }
+						// else if(iri.indexOf("linkedlifedata.com")>-1)
+						// {
+						// 	splitIRI = iri.split("/");
+						// 	display_content_ex = "linkedlifedata:"+ splitIRI[splitIRI.length-1];
+						// 	resolve_url_ex = iri;
+						// }
+						// else if(iri.indexOf("identifiers.org")>-1){
+						// 	splitIRI = iri.split("/");
+						// 	display_content_ex = "id-"+ splitIRI[splitIRI.length-2] + ":" + splitIRI[splitIRI.length-1];
+						// 	resolve_url_ex = iri;
+						// }
+                        d += `<a href="${iri}" target="_blank">${iri}</a><br />`;
                     }
                 
                 //d += `<div class="hr-line-dashed">`;    

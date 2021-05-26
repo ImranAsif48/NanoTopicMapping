@@ -9,7 +9,7 @@
         <link href="../css/dataTables.bootstrap4.min.css" rel="stylesheet" />
         <link href="../css/pagination.css" rel="stylesheet" type="text/css"/>
         <link href="../css/style.css" rel="stylesheet" type="text/css"/>
-        <title>IMS Cluster</title>
+        <title>Human Verification Sampling Page</title>
     </head>
     <body>
         <div class="container-fluid h-100">
@@ -23,7 +23,7 @@
                         <br />
                         <div class="card">
                             <div class="card-header">
-                                Summary - <small id="SearchTime"></small>
+                            Human Verification Cluster Sampling - <small id="SearchTime"></small>
                             </div>
                             <div class="card-body">
                                 <table id="tbl" class="table table-striped table-bordered" style="width:100%" >
@@ -32,7 +32,6 @@
                                         <th># of Nanopublications</th>
                                     </thead>
                                     <tbody id="tblTopic">
-
                                     </tbody>
                                 </table>
                             </div>
@@ -78,16 +77,15 @@
         <script src="../Scripts/jquery.dataTables.min.js"></script>
         <script src="../Scripts/dataTables.bootstrap4.min.js"></script>
         <script src="../Scripts/pagination.min.js"></script>
-
         <script>
-            $(document).ready(function() {
-                $('#tbl').DataTable( {
-                    "processing": true,
-                    "serverSide": true,
-                    "ajax": "../Code/cluster_ims.php",
-                    "order": [[ 1, "desc" ]]
-                } );
+         $(document).ready(function() {
+            $('#tbl').DataTable( {
+                "processing": true,
+                "serverSide": true,
+                "ajax": "../Code/sampling_ims_merge.php",
+                "order": [[ 1, "desc" ], [ 0, 'desc' ]]
             } );
+        } );
             function AJAXCallForNano(oiri, count, label, resolveIRI)
             {
                 $('#modalTitle').html(`<a href="${resolveIRI}" target="_blank">${label}</a> <br />

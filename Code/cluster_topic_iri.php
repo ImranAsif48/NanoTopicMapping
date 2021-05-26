@@ -19,10 +19,10 @@
  */
  
 // DB table to use
-$table = 'topic_iri_cluster';
+$table = 'new_topic_iri_cluster';
  
 // Table's primary key
-$primaryKey = 'c_id';
+$primaryKey = 'topicIRI';
  
 // Array of database columns which should be read and sent back to DataTables.
 // The `db` parameter represents the column name in the database, while the `dt`
@@ -36,15 +36,29 @@ $columns = array(
             
             if(strrpos($d, "www.nextprot")>0)
             {
-                $display_content = "nextprot:". explode("#",$d)[1];
-                $resolve_url = "https://www.nextprot.org/entry/". explode("#",$d)[1];
+                if(count(explode("#",$d))>1)
+                {
+                    $display_content = "nextprot:". explode("#",$d)[1];
+                    $resolve_url = "https://www.nextprot.org/entry/". explode("#",$d)[1];    
+                }
+                else{
+                    $splitIRI = explode("/",$d);
+                    $display_content = "nextprot:". $splitIRI[count($splitIRI )-1];
+                    $resolve_url = $d;
+                }
+            }
+            else if(strrpos($d, "linkedlifedata.com")>0)
+            {
+                $splitIRI = explode("/",$d);
+                $display_content = "linkedlifedata:". $splitIRI[count($splitIRI )-1];
+                $resolve_url = $d;
             }
             else if(strrpos($d,"identifiers.org")>0){
                 $splitIRI = explode("/",$d);
                 $display_content = "id-". $splitIRI[count($splitIRI) - 2] . ":" . $splitIRI[count($splitIRI) - 1];
                 $resolve_url = $d;
             }
-                    return '<a href="'.$resolve_url.'" target="_blank">'. $display_content .'</a>' ;
+                    return 'Cluster (<a href="'.$resolve_url.'" target="_blank">'. $display_content .'</a>)' ;
         }
     ),
     array( 'db' => 'nano_count',  'dt' => 1,
@@ -56,6 +70,23 @@ $columns = array(
             {
                 $display_content = "nextprot:". explode("#",$row["topicIRI"])[1];
                 $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];
+                
+                if(count(explode("#",$row["topicIRI"]))>1)
+                {
+                    $display_content = "nextprot:". explode("#",$row["topicIRI"])[1];
+                    $resolve_url = "https://www.nextprot.org/entry/". explode("#",$row["topicIRI"])[1];    
+                }
+                else{
+                    $splitIRI = explode("/",$row["topicIRI"]);
+                    $display_content = "nextprot:". $splitIRI[count($splitIRI )-1];
+                    $resolve_url = $d;
+                }
+            }
+            else if(strrpos($row["topicIRI"], "linkedlifedata.com")>0)
+            {
+                $splitIRI = explode("/",$row["topicIRI"]);
+                $display_content = "linkedlifedata:". $splitIRI[count($splitIRI )-1];
+                $resolve_url = $d;
             }
             else if(strrpos($row["topicIRI"],"identifiers.org")>0){
                 $splitIRI = explode("/",$row["topicIRI"]);
@@ -72,7 +103,8 @@ $sql_details = array(
     'user' => 'ia48',
     'pass' => '7INB446Kle',
     'db'   => 'ia48',
-    'host' => 'www.macs.hw.ac.uk'
+    //'host' => 'www.macs.hw.ac.uk'
+    'host' => 'mysql-server-1'
 );
  
  
