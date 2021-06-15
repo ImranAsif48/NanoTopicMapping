@@ -18,10 +18,10 @@
             <main class="row">
                     <div class="col-md-12">
                       <div class="jumbotron">
-                        <h1>Topic Modelling of Nanopublications</h1>
-                        <p>More than 10 Million of nanopublications have been published in life Sciences domain across over the world. We 
+                        <h1>Topic Mapping b/w Nanopublications</h1>
+                        <p>More than 10 Million of nanopublications have been published in life Sciences domain across over the world. We
                            took 4.8 Million from them for our analysis. They are from neXtProt, DisGeNET, and Wikipathways datasets.
-                           They do not provide the interoperability between the datasets. Here we proposd the model that brings the 
+                           They do not provide the interoperability between the datasets. Here we proposd the framework that brings the
                            nanopublications together on particular topic with timeline of discourse.</p>
                       </div>
                     </div>
@@ -48,7 +48,7 @@
                           <i class="fas fa-times fa-5x"></i>
                         </div>
                         <h6 class="text-uppercase">neXtProt Nanopubs</h6>
-                        
+
                         <!-- with blank nodes  -->
                         <!-- <h1 class="display-4">4,021,762</h1> -->
 
@@ -91,7 +91,7 @@
                         <h6 class="text-uppercase">Total IRIs</h6>
                         <!-- Total IRIs without eliminating the blank nodes -->
                         <!-- <h1 class="display-4">11,510,709</h1> -->
-                        
+
                         <!-- Total IRIs after eliminating blank nodes-->
                         <h1 class="display-4">9,570,950</h1>
                       </div>
@@ -132,20 +132,19 @@
                   </div>
             </div>
             <footer>
-                
+
             </footer>
         </div>
-        
+
         <script src="Scripts/jquery-3.4.1.min.js"></script>
         <script src="Scripts/popper-1.14.7.min.js"></script>
         <script src="Scripts/bootstrap-4.3.1.min.js"></script>
         <script>
     //////////////////////////////////
-    //// Loader 
+    //// Loader
     function hideLoader() {
       document.getElementById("loader").style.display = "none";
     }
     </script>
     </body>
 </html>
-

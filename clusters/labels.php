@@ -28,7 +28,7 @@
                             <div class="card-body">
                                 <table id="tbl" class="table table-striped table-bordered" style="width:100%" >
                                     <thead>
-                                        <th>rdfsLabel Clusters</th>
+                                        <th>Grouped by rdfsLabel</th>
                                         <th># of Nanopublications</th>
                                     </thead>
                                     <tbody id="tblTopic">
@@ -38,12 +38,12 @@
                         </div>
                     </div>
             </main>
-            
+
             <footer>
-                
+
             </footer>
         </div>
-        
+
         <button id="btnModal" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             </button>
             <!-- Modal -->
@@ -123,7 +123,7 @@
                                 $('#divContent').show();
                                 $('#divSpin').hide();
                             },
-                            error: function (jqXHR, textStatus, errorThrown) { 
+                            error: function (jqXHR, textStatus, errorThrown) {
                                 alert( "Request failed: " + textStatus );
                              }
                         })
@@ -137,8 +137,8 @@
                     {
                         d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].npHash}</a><br />`;
                     }
-                
-                //d += `<div class="hr-line-dashed">`;    
+
+                //d += `<div class="hr-line-dashed">`;
                 //var html = template(data);
                 $("#divContent").html(d);
             }
@@ -147,4 +147,3 @@
         </script>
     </body>
 </html>
-

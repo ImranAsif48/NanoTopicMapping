@@ -45,7 +45,7 @@
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins">
                             <div class="ibox-content">
-                            <h2>Search By IRI</h2>
+                            <h2>Search By Identifier (IRI)</h2>
                             <hr />
                                 <div class="search-form">
                                         <div class="input-group">

@@ -15,8 +15,8 @@
                                 Search
                               </a>
                               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/~ia48/NanoTopicMapping/search_nanopubs_keyword.php">Keyword Search</a>
-                                <a class="dropdown-item" href="search_nanopubs_iri.php">IRI Search</a>
+                                <a class="dropdown-item" href="/~ia48/NanoTopicMapping/search_nanopubs_keyword.php">Topic (Label) Search</a>
+                                <a class="dropdown-item" href="search_nanopubs_iri.php">Identifier (IRI) Search</a>
                               </div>
                             </li>
                             <li class="nav-item dropdown">

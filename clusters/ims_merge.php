@@ -29,7 +29,7 @@
                                 <div class="table-responsive">
                                     <table id="tbl" class="table table-striped table-bordered dt-responsive nowrap" >
                                         <thead>
-                                            <th>IMS</th>
+                                            <th>Grouped by IMS</th>
                                             <th># of Nanopublications</th>
                                         </thead>
                                         <tbody id="tblTopic">
@@ -40,12 +40,12 @@
                         </div>
                     </div>
             </main>
-            
+
             <footer>
-                
+
             </footer>
         </div>
-        
+
         <button id="btnModal" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             </button>
             <!-- Modal -->
@@ -125,7 +125,7 @@
                                 $('#divContent').show();
                                 $('#divSpin').hide();
                             },
-                            error: function (jqXHR, textStatus, errorThrown) { 
+                            error: function (jqXHR, textStatus, errorThrown) {
                                 alert( "Request failed: " + textStatus );
                              }
                         })
@@ -139,8 +139,8 @@
                     {
                         d += `<a href="${result[i].trustyURI}" target="_blank">${result[i].trustyURI}</a><br />`;
                     }
-                
-                //d += `<div class="hr-line-dashed">`;    
+
+                //d += `<div class="hr-line-dashed">`;
                 //var html = template(data);
                 $("#divContent").html(d);
             }
@@ -167,7 +167,7 @@
                                 $('#divContent').show();
                                 $('#divSpin').hide();
                             },
-                            error: function (jqXHR, textStatus, errorThrown) { 
+                            error: function (jqXHR, textStatus, errorThrown) {
                                 alert( "Request failed: " + textStatus );
                              }
                         })
@@ -187,7 +187,7 @@
 						// 	if(iri.split("#").length>1)
 						// 	{
 						// 		display_content_ex = "nextprot:"+ iri.split("#")[1];
-						// 	    resolve_url_ex = "https://www.nextprot.org/entry/"+ iri.split("#")[1];   
+						// 	    resolve_url_ex = "https://www.nextprot.org/entry/"+ iri.split("#")[1];
 						// 	}
 						// 	else{
 						// 		let splitIRI = iri.split("/");
@@ -208,8 +208,8 @@
 						// }
                         d += `<a href="${iri}" target="_blank">${iri}</a><br />`;
                     }
-                
-                //d += `<div class="hr-line-dashed">`;    
+
+                //d += `<div class="hr-line-dashed">`;
                 //var html = template(data);
                 $("#divContent").html(d);
             }
@@ -218,4 +218,3 @@
         </script>
     </body>
 </html>
-

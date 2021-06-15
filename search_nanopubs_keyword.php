@@ -43,7 +43,7 @@
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins">
                             <div class="ibox-content">
-                            <h2>Search By Keyword</h2>
+                            <h2>Search By Topic (Label)</h2>
                             <hr />
                                 <div class="search-form">
                                         <div class="input-group">

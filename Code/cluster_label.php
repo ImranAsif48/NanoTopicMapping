@@ -1,5 +1,5 @@
 <?php
- 
+
 /*
  * DataTables example server-side processing script.
  *
@@ -13,23 +13,23 @@
  *
  * @license MIT - http://datatables.net/license_mit
  */
- 
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Easy set variables
  */
- 
+
 // DB table to use
 $table = 'new_topic_label_cluster';
  
 // Table's primary key
 $primaryKey = 'rdfsLabel';
- 
+
 // Array of database columns which should be read and sent back to DataTables.
 // The `db` parameter represents the column name in the database, while the `dt`
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
 $columns = array(
-    array( 'db' => 'rdfsLabel', 'dt' => 0, 
+    array( 'db' => 'rdfsLabel', 'dt' => 0,
     'formatter' => function( $d, $row ) {
              $resolve_url = '';
             // if(strrpos($row["topicIRI"], "www.nextprot")>0)
@@ -40,7 +40,7 @@ $columns = array(
             //     $splitIRI = explode("/",$row["topicIRI"]);
             //     $resolve_url = $row["topicIRI"];
             // }
-        return 'Cluster (<a href="#">' . $row["rdfsLabel"] . '</a>)';
+        return 'Group (<a href="#">' . $row["rdfsLabel"] . '</a>)';
      }
     ),
     //array( 'db' => 'topicIRI', 'dt' => 2),
@@ -62,10 +62,10 @@ $columns = array(
             // }
             $label = $row["rdfsLabel"];
             return '<span style="cursor:pointer;text-decoration:underline;color:#007bff" onclick="AJAXCallForNano(\''.$label.'\', '.$totalNano.', \''.$label.'\', \'\')">'. $row["nano_count"] .'</span>';
-         }  
+         }
     ),
 );
- 
+
 // SQL server connection information
 $sql_details = array(
     'user' => 'ia48',
@@ -74,15 +74,15 @@ $sql_details = array(
     //'host' => 'www.macs.hw.ac.uk'
     'host' => 'mysql-server-1'
 );
- 
- 
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * If you just want to use the basic configuration for DataTables with PHP
  * server-side, there is no need to edit below this line.
  */
- 
+
 require( 'ssp.class.php' );
- 
+
 echo json_encode(
     SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns )
 );
