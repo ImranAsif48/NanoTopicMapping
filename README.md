@@ -1,0 +1,2 @@
+# NanoTopicMapping
+More than 10 Million of nanopublications have been published in life Sciences domain across over the world. We took 4.8 Million from them for our analysis. They are from neXtProt, DisGeNET, and Wikipathways datasets. They do not provide the interoperability between the datasets. Here we proposd the framework that brings the nanopublications together on particular topic with timeline of discourse.
